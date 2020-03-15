@@ -8,8 +8,8 @@
     <Authors>www.sunamo.cz</Authors>
     <RepositoryUrl>https://github.com/sunamo/SunamoRobotsTxt</RepositoryUrl>
     <PackageProjectUrl>https://github.com/sunamo/SunamoRobotsTxt</PackageProjectUrl>
-    <PackageReleaseNotes>Added description</PackageReleaseNotes>
-    <Version>1.0.2</Version>
+    <PackageReleaseNotes>Added icon</PackageReleaseNotes>
+    <Version>1.0.4</Version>
     <Description>Robots.txt parser and generator which I'm using on www.sunamo.cz and other sites.</Description>
     <Copyright>www.sunamo.cz</Copyright>
   </PropertyGroup>

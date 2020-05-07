@@ -12,6 +12,7 @@
     <Version>1.0.4</Version>
     <Description>Robots.txt parser and generator which I'm using on www.sunamo.cz and other sites.</Description>
     <Copyright>www.sunamo.cz</Copyright>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
 </Project>

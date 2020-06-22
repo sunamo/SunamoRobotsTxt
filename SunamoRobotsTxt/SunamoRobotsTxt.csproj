@@ -14,4 +14,10 @@
     <Copyright>www.sunamo.cz</Copyright>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\sunamo\Xlf\Xlf.csproj">
+      <Project>{00B76D22-B82F-43FD-AC48-4B1F56E6910F}</Project>
+      <Name>Xlf</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

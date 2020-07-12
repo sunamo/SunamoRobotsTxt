@@ -108,12 +108,7 @@ namespace SunamoRobotsTxt
         {
             StringBuilder sb = new StringBuilder();
 
-            foreach (var item in sitemaps)
-            {
-                sb.AppendLine(sitemap + item);
-            }
-
-            sb.AppendLine();
+            
 
             var userAgents = new List<string>();
             userAgents.AddRange(allows.Keys);
@@ -123,9 +118,17 @@ namespace SunamoRobotsTxt
             foreach (var item in userAgents)
             {
                 sb.AppendLine(userAgent + item);
+                sb.AppendLine();
                 WriteAllowDisallow(sb, item, allows, allow);
                 WriteAllowDisallow(sb, item, disallows, disallow);
             }
+
+            foreach (var item in sitemaps)
+            {
+                sb.AppendLine(sitemap + item);
+            }
+
+            //sb.AppendLine();
 
             File.WriteAllText(path, sb.ToString());
         }

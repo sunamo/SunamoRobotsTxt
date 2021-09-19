@@ -13,6 +13,9 @@
     <Description>Robots.txt parser and generator which I'm using on www.sunamo.cz and other sites.</Description>
     <Copyright>www.sunamo.cz</Copyright>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <SignAssembly>false</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile>sunamo.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <PlatformTarget>x86</PlatformTarget>

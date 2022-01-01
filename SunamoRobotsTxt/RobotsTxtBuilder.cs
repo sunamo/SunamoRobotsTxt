@@ -130,7 +130,7 @@ namespace SunamoRobotsTxt
 
             //sb.AppendLine();
 
-            File.WriteAllText(path, sb.ToString());
+            TF.WriteAllText(path, sb.ToString());
         }
 
         private void WriteAllowDisallow(StringBuilder sb, string item, IDictionary<string, List<string>> dict, string prefix)

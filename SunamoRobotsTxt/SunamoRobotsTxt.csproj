@@ -1,22 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Company>www.sunamo.cz</Company>
-    <Authors>www.sunamo.cz</Authors>
-    <RepositoryUrl>https://github.com/sunamo/SunamoRobotsTxt</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/sunamo/SunamoRobotsTxt</PackageProjectUrl>
-    <PackageReleaseNotes>Added icon</PackageReleaseNotes>
-    <Version>1.0.4</Version>
-    <Description>Robots.txt parser and generator which I'm using on www.sunamo.cz and other sites.</Description>
-    <Copyright>www.sunamo.cz</Copyright>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <SignAssembly>false</SignAssembly>
-    <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile>sunamo.snk</AssemblyOriginatorKeyFile>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <TargetFramework>net7.0-windows</TargetFramework>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'"></PropertyGroup>
-  <ItemGroup></ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
 </Project>

@@ -1,0 +1,1 @@
+Robots.txt parser and generator which I'm using on www.sunamo.cz and other sites.

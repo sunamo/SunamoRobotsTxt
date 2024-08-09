@@ -2,49 +2,38 @@ namespace SunamoRobotsTxt;
 
 public class RobotsTxtBuilder
 {
-    const string sitemap = "Sitemap: ";
-    const string disallow = "Disallow: ";
-    const string allow = "Allow: ";
-    const string userAgent = "User-agent: ";
+    private const string sitemap = "Sitemap: ";
+    private const string disallow = "Disallow: ";
+    private const string allow = "Allow: ";
+    private const string userAgent = "User-agent: ";
 
-    public List<string> sitemaps = new List<string>();
-    public Dictionary<string, List<string>> disallows = new Dictionary<string, List<string>>();
-    public Dictionary<string, List<string>> allows = new Dictionary<string, List<string>>();
-    public List<string> notRecognizedLines = new List<string>();
+    private readonly string actualUserAgent = string.Empty;
+    public Dictionary<string, List<string>> allows = new();
+    public Dictionary<string, List<string>> disallows = new();
+    public List<string> notRecognizedLines = new();
 
-    string actualUserAgent = string.Empty;
+    public List<string> sitemaps = new();
+
     public RobotsTxtBuilder(IEnumerable<string> lines)
     {
         foreach (var item in lines)
         {
-            if (item.Trim() == string.Empty)
-            {
-                continue;
-            }
+            if (item.Trim() == string.Empty) continue;
             if (item.StartsWith(sitemap))
-            {
                 AddWithoutPrefix(sitemaps, sitemap, item);
-            }
             else if (item.StartsWith(userAgent))
-            {
                 actualUserAgent = item.Substring(userAgent.Length);
-            }
             else if (item.StartsWith(allow))
-            {
                 AddWithoutPrefix(allows, allow, actualUserAgent, item);
-            }
             else if (item.StartsWith(disallow))
-            {
                 AddWithoutPrefix(disallows, disallow, actualUserAgent, item);
-            }
             else
-            {
                 notRecognizedLines.Add(item);
-            }
         }
     }
 
-    private void AddWithoutPrefix(Dictionary<string, List<string>> allows, string allow, string actualUserAgent, string item)
+    private void AddWithoutPrefix(Dictionary<string, List<string>> allows, string allow, string actualUserAgent,
+        string item)
     {
         item = item.Substring(allow.Length);
 
@@ -54,19 +43,14 @@ public class RobotsTxtBuilder
     private void AddWithoutPrefix(List<string> sitemaps, string sitemap, string item)
     {
         item = item.Substring(sitemap.Length);
-        if (!sitemaps.Contains(item))
-        {
-            sitemaps.Add(item);
-        }
+        if (!sitemaps.Contains(item)) sitemaps.Add(item);
     }
 
     public void Sitemap(string path)
     {
-        if (!sitemaps.Contains(path))
-        {
-            sitemaps.Add(path);
-        }
+        if (!sitemaps.Contains(path)) sitemaps.Add(path);
     }
+
     public void Disallow(string userAgent, string path)
     {
         AddOrCreateIfDontExists(disallows, userAgent, path);
@@ -86,14 +70,11 @@ public class RobotsTxtBuilder
     {
         if (sl.ContainsKey(key))
         {
-            if (!sl[key].Contains(value))
-            {
-                sl[key].Add(value);
-            }
+            if (!sl[key].Contains(value)) sl[key].Add(value);
         }
         else
         {
-            List<Value> ad = new List<Value>();
+            var ad = new List<Value>();
             ad.Add(value);
             sl.Add(key, ad);
         }
@@ -101,9 +82,8 @@ public class RobotsTxtBuilder
 
     public void Save(string path)
     {
-        StringBuilder sb = new StringBuilder();
+        var sb = new StringBuilder();
 
-        
 
         var userAgents = new List<string>();
         userAgents.AddRange(allows.Keys);
@@ -118,39 +98,27 @@ public class RobotsTxtBuilder
             WriteAllowDisallow(sb, item, disallows, disallow);
         }
 
-        foreach (var item in sitemaps)
-        {
-            sb.AppendLine(sitemap + item);
-        }
+        foreach (var item in sitemaps) sb.AppendLine(sitemap + item);
 
         //sb.AppendLine();
 
         File.WriteAllText(path, sb.ToString());
     }
 
-    private void WriteAllowDisallow(StringBuilder sb, string item, IDictionary<string, List<string>> dict, string prefix)
+    private void WriteAllowDisallow(StringBuilder sb, string item, IDictionary<string, List<string>> dict,
+        string prefix)
     {
         var allowed = GetValuesOrEmpty(dict, item);
 
 
+        foreach (var item2 in allowed) sb.AppendLine(prefix + item2);
 
-        foreach (var item2 in allowed)
-        {
-            sb.AppendLine(prefix + item2);
-        }
-
-        if (allowed.Count != 0)
-        {
-            sb.AppendLine();
-        }
+        if (allowed.Count != 0) sb.AppendLine();
     }
 
     public static List<U> GetValuesOrEmpty<T, U>(IDictionary<T, List<U>> dict, T t)
     {
-        if (dict.ContainsKey(t))
-        {
-            return dict[t];
-        }
+        if (dict.ContainsKey(t)) return dict[t];
         return new List<U>();
     }
 }

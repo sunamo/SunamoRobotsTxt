@@ -3,7 +3,7 @@ global using System.IO;
 global using System.Linq;
 global using System.Text;
 global using SunamoRobotsTxt._sunamo.SunamoExceptions;
-global using SunamoRobotsTxt._sunamo.SunamoValues;
+global using SunamoRobotsTxt;
 global using System;
 global using System.Collections;
 global using System.Diagnostics.CodeAnalysis;

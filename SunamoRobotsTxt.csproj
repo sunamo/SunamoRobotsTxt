@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <Version>24.11.12.1</Version>
     <Description>Parse and generate robots.txt files</Description>
     <Authors>www.sunamo.cz</Authors>

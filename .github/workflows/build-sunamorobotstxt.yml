@@ -1,0 +1,61 @@
+name: Build SunamoRobotsTxt
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "**" ]
+
+jobs:
+  build:
+    name: Build SunamoRobotsTxt
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore SunamoRobotsTxt/SunamoRobotsTxt.csproj
+
+    - name: Build
+      run: dotnet build SunamoRobotsTxt/SunamoRobotsTxt.csproj --configuration Release --no-restore
+
+  test:
+    name: Test SunamoRobotsTxt.Tests
+    runs-on: ${{ matrix.os }}
+    needs: build
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore SunamoRobotsTxt.Tests/SunamoRobotsTxt.Tests.csproj
+
+    - name: Build tests
+      run: dotnet build SunamoRobotsTxt.Tests/SunamoRobotsTxt.Tests.csproj --configuration Release --no-restore
+
+    - name: Run tests
+      run: dotnet test SunamoRobotsTxt.Tests/SunamoRobotsTxt.Tests.csproj --configuration Release --no-build --verbosity normal
+      continue-on-error: true

@@ -1,3 +1,6 @@
+// EN: Variable names have been checked and replaced with self-descriptive names
+// CZ: Názvy proměnných byly zkontrolovány a nahrazeny samopopisnými názvy
+
 namespace SunamoRobotsTxt;
 
 public class RobotsTxtBuilder
@@ -82,7 +85,7 @@ public class RobotsTxtBuilder
 
     public void Save(string path)
     {
-        var sb = new StringBuilder();
+        var stringBuilder = new StringBuilder();
 
 
         var userAgents = new List<string>();
@@ -92,28 +95,28 @@ public class RobotsTxtBuilder
 
         foreach (var item in userAgents)
         {
-            sb.AppendLine(userAgent + item);
-            sb.AppendLine();
-            WriteAllowDisallow(sb, item, allows, allow);
-            WriteAllowDisallow(sb, item, disallows, disallow);
+            stringBuilder.AppendLine(userAgent + item);
+            stringBuilder.AppendLine();
+            WriteAllowDisallow(stringBuilder, item, allows, allow);
+            WriteAllowDisallow(stringBuilder, item, disallows, disallow);
         }
 
-        foreach (var item in sitemaps) sb.AppendLine(sitemap + item);
+        foreach (var item in sitemaps) stringBuilder.AppendLine(sitemap + item);
 
-        //sb.AppendLine();
+        //stringBuilder.AppendLine();
 
-        File.WriteAllText(path, sb.ToString());
+        File.WriteAllText(path, stringBuilder.ToString());
     }
 
-    private void WriteAllowDisallow(StringBuilder sb, string item, IDictionary<string, List<string>> dict,
+    private void WriteAllowDisallow(StringBuilder stringBuilder, string item, IDictionary<string, List<string>> dict,
         string prefix)
     {
         var allowed = GetValuesOrEmpty(dict, item);
 
 
-        foreach (var item2 in allowed) sb.AppendLine(prefix + item2);
+        foreach (var item2 in allowed) stringBuilder.AppendLine(prefix + item2);
 
-        if (allowed.Count != 0) sb.AppendLine();
+        if (allowed.Count != 0) stringBuilder.AppendLine();
     }
 
     public static List<U> GetValuesOrEmpty<T, U>(IDictionary<T, List<U>> dict, T t)

@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="SunamoRobotsTxt.Tests\\SunamoRobotsTxt.Tests.csproj" />
+  <Project Path="RunnerRobotsTxt\\RunnerRobotsTxt.csproj" />
+  <Project Path="SunamoRobotsTxt\SunamoRobotsTxt.csproj" />
+</Solution>

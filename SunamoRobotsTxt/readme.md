@@ -1,20 +1,53 @@
-### SunamoRobotsTxt
+# SunamoRobotsTxt
 
-Part of PlatformIndependentNuGetPackages:
+A .NET library for parsing and generating robots.txt files.
 
-- [nuget.org](https://www.nuget.org/profiles/sunamo)
-- [github.org](https://github.com/sunamo/PlatformIndependentNuGetPackages)
+## Features
 
-Another links:
+- Parse existing robots.txt content from lines
+- Build robots.txt files programmatically with Allow/Disallow rules and Sitemap entries
+- Save generated robots.txt to a file
 
-- [Developer site](https://sunamo.cz)
+## Installation
 
-Request for new features / bug report / etc: [Mail](mailto:radek.jancik@sunamo.cz) or on GitHub
+```bash
+dotnet add package SunamoRobotsTxt
+```
+
+## Usage
+
+### Parsing an existing robots.txt
+
+```csharp
+var lines = File.ReadAllLines("robots.txt");
+var builder = new RobotsTxtBuilder(lines);
+
+// Access parsed data
+var sitemaps = builder.Sitemaps;
+var allows = builder.Allows;
+var disallows = builder.Disallows;
+```
+
+### Building a new robots.txt
+
+```csharp
+var builder = new RobotsTxtBuilder(Array.Empty<string>());
+builder.Sitemap("https://example.com/sitemap.xml");
+builder.Allow("*", "/public/");
+builder.Disallow("*", "/private/");
+builder.Save("robots.txt");
+```
+
 ## Target Frameworks
 
-**TargetFrameworks:** `net10.0;net9.0;net8.0`
+`net10.0`, `net9.0`, `net8.0`
 
-**Reason:** Code uses C# 12.0 features (collection expressions, primary constructors) or dependencies requiring .NET 8.0+:
-- Collection expressions `[]` syntax requires C# 12.0 (net8.0+)
-- Primary constructors require C# 12.0 (net8.0+) 
-- Entity Framework Core 9.x requires net8.0+
+## Links
+
+- [NuGet](https://www.nuget.org/profiles/sunamo)
+- [GitHub](https://github.com/sunamo/PlatformIndependentNuGetPackages)
+- [Developer site](https://sunamo.cz)
+
+## License
+
+MIT

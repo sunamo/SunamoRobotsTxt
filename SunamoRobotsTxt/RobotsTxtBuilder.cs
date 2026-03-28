@@ -1,124 +1,180 @@
 namespace SunamoRobotsTxt;
 
+/// <summary>
+/// Builds and parses robots.txt files.
+/// </summary>
 public class RobotsTxtBuilder
 {
-    private const string sitemap = "Sitemap: ";
-    private const string disallow = "Disallow: ";
-    private const string allow = "Allow: ";
-    private const string userAgent = "User-agent: ";
+    private const string sitemapPrefix = "Sitemap: ";
+    private const string disallowPrefix = "Disallow: ";
+    private const string allowPrefix = "Allow: ";
+    private const string userAgentPrefix = "User-agent: ";
 
-    private readonly string actualUserAgent = string.Empty;
-    public Dictionary<string, List<string>> allows = new();
-    public Dictionary<string, List<string>> disallows = new();
-    public List<string> notRecognizedLines = new();
+    /// <summary>
+    /// Gets or sets the allowed paths per user agent.
+    /// </summary>
+    public Dictionary<string, List<string>> Allows { get; set; } = new();
 
-    public List<string> sitemaps = new();
+    /// <summary>
+    /// Gets or sets the disallowed paths per user agent.
+    /// </summary>
+    public Dictionary<string, List<string>> Disallows { get; set; } = new();
 
-    public RobotsTxtBuilder(IEnumerable<string> lines)
+    /// <summary>
+    /// Gets or sets lines that could not be parsed.
+    /// </summary>
+    public List<string> NotRecognizedLines { get; set; } = new();
+
+    /// <summary>
+    /// Gets or sets the sitemap URLs.
+    /// </summary>
+    public List<string> Sitemaps { get; set; } = new();
+
+    /// <summary>
+    /// Parses the given lines of a robots.txt file.
+    /// </summary>
+    /// <param name="enumerable">Lines from a robots.txt file to parse.</param>
+    public RobotsTxtBuilder(IEnumerable<string> enumerable)
     {
-        foreach (var item in lines)
+        var currentUserAgent = string.Empty;
+        foreach (var item in enumerable)
         {
             if (item.Trim() == string.Empty) continue;
-            if (item.StartsWith(sitemap))
-                AddWithoutPrefix(sitemaps, sitemap, item);
-            else if (item.StartsWith(userAgent))
-                actualUserAgent = item.Substring(userAgent.Length);
-            else if (item.StartsWith(allow))
-                AddWithoutPrefix(allows, allow, actualUserAgent, item);
-            else if (item.StartsWith(disallow))
-                AddWithoutPrefix(disallows, disallow, actualUserAgent, item);
+            if (item.StartsWith(sitemapPrefix))
+                AddWithoutPrefix(Sitemaps, sitemapPrefix, item);
+            else if (item.StartsWith(userAgentPrefix))
+                currentUserAgent = item.Substring(userAgentPrefix.Length);
+            else if (item.StartsWith(allowPrefix))
+                AddWithoutPrefix(Allows, allowPrefix, currentUserAgent, item);
+            else if (item.StartsWith(disallowPrefix))
+                AddWithoutPrefix(Disallows, disallowPrefix, currentUserAgent, item);
             else
-                notRecognizedLines.Add(item);
+                NotRecognizedLines.Add(item);
         }
     }
 
-    private void AddWithoutPrefix(Dictionary<string, List<string>> allows, string allow, string actualUserAgent,
-        string item)
+    private static void AddWithoutPrefix(Dictionary<string, List<string>> dictionary, string prefix, string agentName,
+        string text)
     {
-        item = item.Substring(allow.Length);
-
-        AddOrCreateIfDontExists(allows, actualUserAgent, item);
+        text = text.Substring(prefix.Length);
+        AddOrCreateIfDontExists(dictionary, agentName, text);
     }
 
-    private void AddWithoutPrefix(List<string> sitemaps, string sitemap, string item)
+    private static void AddWithoutPrefix(List<string> list, string prefix, string text)
     {
-        item = item.Substring(sitemap.Length);
-        if (!sitemaps.Contains(item)) sitemaps.Add(item);
+        text = text.Substring(prefix.Length);
+        if (!list.Contains(text)) list.Add(text);
     }
 
+    /// <summary>
+    /// Adds a sitemap URL.
+    /// </summary>
+    /// <param name="path">URL of the sitemap.</param>
     public void Sitemap(string path)
     {
-        if (!sitemaps.Contains(path)) sitemaps.Add(path);
+        if (!Sitemaps.Contains(path)) Sitemaps.Add(path);
     }
 
+    /// <summary>
+    /// Adds a disallow rule for a user agent.
+    /// </summary>
+    /// <param name="userAgent">The user agent identifier.</param>
+    /// <param name="path">The disallowed path.</param>
     public void Disallow(string userAgent, string path)
     {
-        AddOrCreateIfDontExists(disallows, userAgent, path);
+        AddOrCreateIfDontExists(Disallows, userAgent, path);
     }
 
+    /// <summary>
+    /// Adds an allow rule for a user agent.
+    /// </summary>
+    /// <param name="userAgent">The user agent identifier.</param>
+    /// <param name="path">The allowed path.</param>
     public void Allow(string userAgent, string path)
     {
-        AddOrCreateIfDontExists(allows, userAgent, path);
+        AddOrCreateIfDontExists(Allows, userAgent, path);
     }
 
-    public static void AddOrCreateIfDontExists(IDictionary<string, List<string>> dict, string key, string value)
+    /// <summary>
+    /// Adds a value to the list for the given key, creating the list if it does not exist.
+    /// </summary>
+    /// <param name="dictionary">The dictionary to add to.</param>
+    /// <param name="key">The key to add the value under.</param>
+    /// <param name="value">The value to add.</param>
+    public static void AddOrCreateIfDontExists(IDictionary<string, List<string>> dictionary, string key, string value)
     {
-        AddOrCreateIfDontExists<string, string>(dict, key, value);
+        AddOrCreateIfDontExists<string, string>(dictionary, key, value);
     }
 
-    public static void AddOrCreateIfDontExists<Key, Value>(IDictionary<Key, List<Value>> sl, Key key, Value value)
+    /// <summary>
+    /// Adds a value to the list for the given key, creating the list if it does not exist.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the dictionary key.</typeparam>
+    /// <typeparam name="TValue">The type of the list elements.</typeparam>
+    /// <param name="dictionary">The dictionary to add to.</param>
+    /// <param name="key">The key to add the value under.</param>
+    /// <param name="value">The value to add.</param>
+    public static void AddOrCreateIfDontExists<TKey, TValue>(IDictionary<TKey, List<TValue>> dictionary, TKey key, TValue value)
     {
-        if (sl.ContainsKey(key))
+        if (dictionary.ContainsKey(key))
         {
-            if (!sl[key].Contains(value)) sl[key].Add(value);
+            if (!dictionary[key].Contains(value)) dictionary[key].Add(value);
         }
         else
         {
-            var ad = new List<Value>();
-            ad.Add(value);
-            sl.Add(key, ad);
+            var list = new List<TValue>();
+            list.Add(value);
+            dictionary.Add(key, list);
         }
     }
 
+    /// <summary>
+    /// Saves the robots.txt content to a file.
+    /// </summary>
+    /// <param name="path">The file path to save to.</param>
     public void Save(string path)
     {
         var stringBuilder = new StringBuilder();
 
-
         var userAgents = new List<string>();
-        userAgents.AddRange(allows.Keys);
-        userAgents.AddRange(disallows.Keys);
+        userAgents.AddRange(Allows.Keys);
+        userAgents.AddRange(Disallows.Keys);
         userAgents = userAgents.Distinct().ToList();
 
         foreach (var item in userAgents)
         {
-            stringBuilder.AppendLine(userAgent + item);
+            stringBuilder.AppendLine(userAgentPrefix + item);
             stringBuilder.AppendLine();
-            WriteAllowDisallow(stringBuilder, item, allows, allow);
-            WriteAllowDisallow(stringBuilder, item, disallows, disallow);
+            WriteAllowDisallow(stringBuilder, item, Allows, allowPrefix);
+            WriteAllowDisallow(stringBuilder, item, Disallows, disallowPrefix);
         }
 
-        foreach (var item in sitemaps) stringBuilder.AppendLine(sitemap + item);
-
-        //stringBuilder.AppendLine();
+        foreach (var item in Sitemaps) stringBuilder.AppendLine(sitemapPrefix + item);
 
         File.WriteAllText(path, stringBuilder.ToString());
     }
 
-    private void WriteAllowDisallow(StringBuilder stringBuilder, string item, IDictionary<string, List<string>> dict,
+    private static void WriteAllowDisallow(StringBuilder stringBuilder, string agentName, IDictionary<string, List<string>> dictionary,
         string prefix)
     {
-        var allowed = GetValuesOrEmpty(dict, item);
+        var values = GetValuesOrEmpty(dictionary, agentName);
 
+        foreach (var item in values) stringBuilder.AppendLine(prefix + item);
 
-        foreach (var item2 in allowed) stringBuilder.AppendLine(prefix + item2);
-
-        if (allowed.Count != 0) stringBuilder.AppendLine();
+        if (values.Count != 0) stringBuilder.AppendLine();
     }
 
-    public static List<U> GetValuesOrEmpty<T, U>(IDictionary<T, List<U>> dict, T t)
+    /// <summary>
+    /// Returns the list of values for the given key, or an empty list if the key does not exist.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the dictionary key.</typeparam>
+    /// <typeparam name="TValue">The type of the list elements.</typeparam>
+    /// <param name="dictionary">The dictionary to look up.</param>
+    /// <param name="key">The key to look up.</param>
+    /// <returns>The list of values, or an empty list.</returns>
+    public static List<TValue> GetValuesOrEmpty<TKey, TValue>(IDictionary<TKey, List<TValue>> dictionary, TKey key)
     {
-        if (dict.ContainsKey(t)) return dict[t];
-        return new List<U>();
+        if (dictionary.ContainsKey(key)) return dictionary[key];
+        return new List<TValue>();
     }
 }

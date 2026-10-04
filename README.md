@@ -1,5 +1,10 @@
 # SunamoRobotsTxt
 
+## Short description
+
+Knihovna pro parsování a generování souborů robots.txt. Obsahuje Runner a testy.
+
+
 Parse and generate robots.txt files
 
 ## Overview

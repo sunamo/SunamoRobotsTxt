@@ -1,8 +1,5 @@
 namespace SunamoRobotsTxt;
 
-/// <summary>
-/// Builds and parses robots.txt files.
-/// </summary>
 public class RobotsTxtBuilder
 {
     private const string sitemapPrefix = "Sitemap: ";
@@ -10,30 +7,14 @@ public class RobotsTxtBuilder
     private const string allowPrefix = "Allow: ";
     private const string userAgentPrefix = "User-agent: ";
 
-    /// <summary>
-    /// Gets or sets the allowed paths per user agent.
-    /// </summary>
     public Dictionary<string, List<string>> Allows { get; set; } = new();
 
-    /// <summary>
-    /// Gets or sets the disallowed paths per user agent.
-    /// </summary>
     public Dictionary<string, List<string>> Disallows { get; set; } = new();
 
-    /// <summary>
-    /// Gets or sets lines that could not be parsed.
-    /// </summary>
     public List<string> NotRecognizedLines { get; set; } = new();
 
-    /// <summary>
-    /// Gets or sets the sitemap URLs.
-    /// </summary>
     public List<string> Sitemaps { get; set; } = new();
 
-    /// <summary>
-    /// Parses the given lines of a robots.txt file.
-    /// </summary>
-    /// <param name="enumerable">Lines from a robots.txt file to parse.</param>
     public RobotsTxtBuilder(IEnumerable<string> enumerable)
     {
         var currentUserAgent = string.Empty;
@@ -66,54 +47,26 @@ public class RobotsTxtBuilder
         if (!list.Contains(text)) list.Add(text);
     }
 
-    /// <summary>
-    /// Adds a sitemap URL.
-    /// </summary>
-    /// <param name="path">URL of the sitemap.</param>
     public void Sitemap(string path)
     {
         if (!Sitemaps.Contains(path)) Sitemaps.Add(path);
     }
 
-    /// <summary>
-    /// Adds a disallow rule for a user agent.
-    /// </summary>
-    /// <param name="userAgent">The user agent identifier.</param>
-    /// <param name="path">The disallowed path.</param>
     public void Disallow(string userAgent, string path)
     {
         AddOrCreateIfDontExists(Disallows, userAgent, path);
     }
 
-    /// <summary>
-    /// Adds an allow rule for a user agent.
-    /// </summary>
-    /// <param name="userAgent">The user agent identifier.</param>
-    /// <param name="path">The allowed path.</param>
     public void Allow(string userAgent, string path)
     {
         AddOrCreateIfDontExists(Allows, userAgent, path);
     }
 
-    /// <summary>
-    /// Adds a value to the list for the given key, creating the list if it does not exist.
-    /// </summary>
-    /// <param name="dictionary">The dictionary to add to.</param>
-    /// <param name="key">The key to add the value under.</param>
-    /// <param name="value">The value to add.</param>
     public static void AddOrCreateIfDontExists(IDictionary<string, List<string>> dictionary, string key, string value)
     {
         AddOrCreateIfDontExists<string, string>(dictionary, key, value);
     }
 
-    /// <summary>
-    /// Adds a value to the list for the given key, creating the list if it does not exist.
-    /// </summary>
-    /// <typeparam name="TKey">The type of the dictionary key.</typeparam>
-    /// <typeparam name="TValue">The type of the list elements.</typeparam>
-    /// <param name="dictionary">The dictionary to add to.</param>
-    /// <param name="key">The key to add the value under.</param>
-    /// <param name="value">The value to add.</param>
     public static void AddOrCreateIfDontExists<TKey, TValue>(IDictionary<TKey, List<TValue>> dictionary, TKey key, TValue value)
     {
         if (dictionary.ContainsKey(key))
@@ -128,10 +81,6 @@ public class RobotsTxtBuilder
         }
     }
 
-    /// <summary>
-    /// Saves the robots.txt content to a file.
-    /// </summary>
-    /// <param name="path">The file path to save to.</param>
     public void Save(string path)
     {
         var stringBuilder = new StringBuilder();
@@ -164,14 +113,6 @@ public class RobotsTxtBuilder
         if (values.Count != 0) stringBuilder.AppendLine();
     }
 
-    /// <summary>
-    /// Returns the list of values for the given key, or an empty list if the key does not exist.
-    /// </summary>
-    /// <typeparam name="TKey">The type of the dictionary key.</typeparam>
-    /// <typeparam name="TValue">The type of the list elements.</typeparam>
-    /// <param name="dictionary">The dictionary to look up.</param>
-    /// <param name="key">The key to look up.</param>
-    /// <returns>The list of values, or an empty list.</returns>
     public static List<TValue> GetValuesOrEmpty<TKey, TValue>(IDictionary<TKey, List<TValue>> dictionary, TKey key)
     {
         if (dictionary.ContainsKey(key)) return dictionary[key];

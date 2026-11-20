@@ -1,5 +1,8 @@
 namespace SunamoRobotsTxt;
 
+/// <summary>
+/// Represents the robots txt builder type.
+/// </summary>
 public class RobotsTxtBuilder
 {
     private const string sitemapPrefix = "Sitemap: ";
@@ -7,14 +10,30 @@ public class RobotsTxtBuilder
     private const string allowPrefix = "Allow: ";
     private const string userAgentPrefix = "User-agent: ";
 
+    /// <summary>
+    /// Gets or sets the allows.
+    /// </summary>
     public Dictionary<string, List<string>> Allows { get; set; } = new();
 
+    /// <summary>
+    /// Gets or sets the disallows.
+    /// </summary>
     public Dictionary<string, List<string>> Disallows { get; set; } = new();
 
+    /// <summary>
+    /// Gets or sets the not recognized lines.
+    /// </summary>
     public List<string> NotRecognizedLines { get; set; } = new();
 
+    /// <summary>
+    /// Gets or sets the sitemaps.
+    /// </summary>
     public List<string> Sitemaps { get; set; } = new();
 
+    /// <summary>
+    /// Robots txt builder.
+    /// </summary>
+    /// <returns>The robots txt builder result.</returns>
     public RobotsTxtBuilder(IEnumerable<string> enumerable)
     {
         var currentUserAgent = string.Empty;
@@ -47,26 +66,55 @@ public class RobotsTxtBuilder
         if (!list.Contains(text)) list.Add(text);
     }
 
+    /// <summary>
+    /// Sitemap.
+    /// </summary>
+    /// <param name="prefix.Length">The prefix length.</param>
+    /// <returns>The sitemap result.</returns>
     public void Sitemap(string path)
     {
         if (!Sitemaps.Contains(path)) Sitemaps.Add(path);
     }
 
+    /// <summary>
+    /// Disallow.
+    /// </summary>
+    /// <param name="list">The list.</param>
+    /// <param name="prefix">The prefix.</param>
+    /// <param name="text">The text.</param>
+    /// <returns>The disallow result.</returns>
     public void Disallow(string userAgent, string path)
     {
         AddOrCreateIfDontExists(Disallows, userAgent, path);
     }
 
+    /// <summary>
+    /// Allow.
+    /// </summary>
+    /// <param name="path">The path.</param>
+    /// <returns>The allow result.</returns>
     public void Allow(string userAgent, string path)
     {
         AddOrCreateIfDontExists(Allows, userAgent, path);
     }
 
+    /// <summary>
+    /// Add or create if dont exists.
+    /// </summary>
+    /// <param name="userAgent">The user agent.</param>
+    /// <param name="path">The path.</param>
+    /// <returns>The add or create if dont exists result.</returns>
     public static void AddOrCreateIfDontExists(IDictionary<string, List<string>> dictionary, string key, string value)
     {
         AddOrCreateIfDontExists<string, string>(dictionary, key, value);
     }
 
+    /// <summary>
+    /// Add or create if dont exists t key t value.
+    /// </summary>
+    /// <param name="userAgent">The user agent.</param>
+    /// <param name="path">The path.</param>
+    /// <returns>The add or create if dont exists t key t value result.</returns>
     public static void AddOrCreateIfDontExists<TKey, TValue>(IDictionary<TKey, List<TValue>> dictionary, TKey key, TValue value)
     {
         if (dictionary.ContainsKey(key))
@@ -81,6 +129,10 @@ public class RobotsTxtBuilder
         }
     }
 
+    /// <summary>
+    /// Initializes a new instance of the save class.
+    /// </summary>
+    /// <param name="dictionary.ContainsKey(key)">The dictionary contains key key.</param>
     public void Save(string path)
     {
         var stringBuilder = new StringBuilder();
@@ -113,6 +165,14 @@ public class RobotsTxtBuilder
         if (values.Count != 0) stringBuilder.AppendLine();
     }
 
+    /// <summary>
+    /// Get values or empty t key t value.
+    /// </summary>
+    /// <param name="stringBuilder">The string builder.</param>
+    /// <param name="agentName">The agent name.</param>
+    /// <param name="dictionary">The dictionary.</param>
+    /// <param name="prefix">The prefix.</param>
+    /// <returns>The get values or empty t key t value result.</returns>
     public static List<TValue> GetValuesOrEmpty<TKey, TValue>(IDictionary<TKey, List<TValue>> dictionary, TKey key)
     {
         if (dictionary.ContainsKey(key)) return dictionary[key];
